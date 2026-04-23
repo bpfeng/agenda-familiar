@@ -1,0 +1,2 @@
+supabase==2.3.4
+twilio==8.13.0
