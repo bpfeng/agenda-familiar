@@ -1,2 +1,2 @@
 # agenda-familiar
-Agenda Pfeng Gasár
+Agenda Pfeng Gaspar
