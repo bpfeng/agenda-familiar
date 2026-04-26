@@ -1,4 +1,71 @@
-const CACHE_NAME = 'agenda-familiar-v2';
+const CACHE_NAME = 'agenda-familiar-v3';
+
+// Instalación
+self.addEventListener('install', event => {
+  self.skipWaiting();
+});
+
+// Activación — limpiar TODOS los caches anteriores
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.map(k => caches.delete(k)))
+    )
+  );
+  self.clients.claim();
+});
+
+// Fetch — HTML siempre desde red, resto desde cache
+self.addEventListener('fetch', event => {
+  const url = event.request.url;
+
+  // No interceptar Supabase ni fuentes externas
+  if (url.includes('supabase.co') ||
+      url.includes('twilio.com') ||
+      url.includes('fonts.googleapis') ||
+      url.includes('cdn.jsdelivr')) {
+    return;
+  }
+
+  // HTML siempre desde la red (nunca desde cache)
+  if (event.request.destination === 'document' || url.endsWith('.html') || url.endsWith('/')) {
+    event.respondWith(
+      fetch(event.request).catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  // Resto: cache first
+  event.respondWith(
+    caches.match(event.request).then(cached => {
+      return cached || fetch(event.request).then(response => {
+        if (response && response.status === 200) {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+        }
+        return response;
+      });
+    })
+  );
+});
+
+// Notificaciones push
+self.addEventListener('push', event => {
+  if (!event.data) return;
+  const data = event.data.json();
+  self.registration.showNotification(data.title || 'Agenda Familiar', {
+    body: data.body || '',
+    icon: '/icon-192.png',
+    badge: '/icon-192.png',
+    vibrate: [200, 100, 200],
+    data: { url: data.url || '/' }
+  });
+});
+
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  event.waitUntil(clients.openWindow(event.notification.data.url || '/'));
+});
 const ASSETS = [
   '/',
   '/index.html',
