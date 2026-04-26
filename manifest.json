@@ -1,0 +1,34 @@
+{
+  "name": "Agenda Familia Pfeng Gaspar",
+  "short_name": "Familia",
+  "description": "Agenda compartida de la familia Pfeng Gaspar",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F7F6F2",
+  "theme_color": "#E91E8C",
+  "orientation": "portrait-primary",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Nuevo evento",
+      "short_name": "Agregar",
+      "description": "Agregar un nuevo evento al calendario",
+      "url": "/?action=new",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
