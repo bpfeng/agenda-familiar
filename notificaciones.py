@@ -26,7 +26,7 @@ VENTANAS = [
     {"minutos": 60,   "etiqueta": "en 1 hora"},
     {"minutos": 30,   "etiqueta": "en 30 minutos"},
 ]
-TOLERANCIA_MIN = 8
+TOLERANCIA_MIN = 14
 
 
 def proxima_ocurrencia(evento: dict, desde: datetime):
@@ -35,13 +35,17 @@ def proxima_ocurrencia(evento: dict, desde: datetime):
     repeat_end = evento.get("repeat_end")
 
     try:
+        # La app guarda la hora en hora Chile (sin convertir a UTC)
+        # Chile invierno = UTC-4, verano = UTC-3
+        # Usamos UTC-4 como estándar
+        CHILE_OFFSET = timedelta(hours=4)
         base = datetime.strptime(
             f"{evento['fecha_inicio'][:10]} {hora_str}", "%Y-%m-%d %H:%M"
-        ).replace(tzinfo=timezone.utc)
+        ).replace(tzinfo=timezone.utc) + CHILE_OFFSET  # convertir Chile → UTC
     except Exception:
         return None
 
-    end = (datetime.strptime(repeat_end, "%Y-%m-%d").replace(tzinfo=timezone.utc)
+    end = (datetime.strptime(repeat_end, "%Y-%m-%d").replace(tzinfo=timezone.utc) + timedelta(hours=4)
            if repeat_end else desde + timedelta(days=366))
 
     if repeat == "none":
