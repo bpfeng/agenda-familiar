@@ -35,17 +35,14 @@ def proxima_ocurrencia(evento: dict, desde: datetime):
     repeat_end = evento.get("repeat_end")
 
     try:
-        # La app guarda la hora en hora Chile (sin convertir a UTC)
-        # Chile invierno = UTC-4, verano = UTC-3
-        # Usamos UTC-4 como estándar
-        CHILE_OFFSET = timedelta(hours=4)
+        # La app ahora guarda en UTC correctamente
         base = datetime.strptime(
             f"{evento['fecha_inicio'][:10]} {hora_str}", "%Y-%m-%d %H:%M"
-        ).replace(tzinfo=timezone.utc) + CHILE_OFFSET  # convertir Chile → UTC
+        ).replace(tzinfo=timezone.utc)
     except Exception:
         return None
 
-    end = (datetime.strptime(repeat_end, "%Y-%m-%d").replace(tzinfo=timezone.utc) + timedelta(hours=4)
+    end = (datetime.strptime(repeat_end, "%Y-%m-%d").replace(tzinfo=timezone.utc)
            if repeat_end else desde + timedelta(days=366))
 
     if repeat == "none":
