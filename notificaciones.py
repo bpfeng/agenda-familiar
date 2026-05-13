@@ -26,7 +26,7 @@ VENTANAS = [
     {"minutos": 60,   "etiqueta": "en 1 hora"},
     {"minutos": 30,   "etiqueta": "en 30 minutos"},
 ]
-TOLERANCIA_MIN = 14
+TOLERANCIA_MIN = 8
 
 
 def proxima_ocurrencia(evento: dict, desde: datetime):
