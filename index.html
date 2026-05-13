@@ -509,9 +509,14 @@ async function saveEvent() {
   const fecha = document.getElementById('ev-date').value;
   const hora = document.getElementById('ev-time').value;
 
+  // Convertir hora Chile (UTC-4) a UTC para guardar correctamente
+  const fechaHoraLocal = new Date(`${fecha}T${hora}:00`);
+  const fechaHoraUTC = new Date(fechaHoraLocal.getTime() + (4 * 60 * 60 * 1000));
+  const fechaUTCStr = fechaHoraUTC.toISOString().slice(0, 19);
+
   const payload = {
     titulo: title,
-    fecha_inicio: `${fecha}T${hora}:00`,
+    fecha_inicio: fechaUTCStr,
     hora: hora,
     descripcion: document.getElementById('ev-desc').value,
     repeat_type: document.getElementById('ev-repeat').value,
